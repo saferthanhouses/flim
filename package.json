@@ -1,0 +1,23 @@
+{
+  "name": "movie-sights",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bluebird": "^3.4.6",
+    "cheerio": "^0.22.0",
+    "mongoose": "^4.7.2",
+    "request": "^2.79.0"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^0.7.0",
+    "express": "^4.14.0",
+    "muicss": "^0.9.6"
+  }
+}
