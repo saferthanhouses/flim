@@ -24,7 +24,7 @@ export default class FilmList extends React.Component {
     if (!this.props.filmsLoaded) {
       content = <LoadingBar/>
     } else {
-      content = this.props.films.map( (film, idx) => <FilmThumb key={idx} film={film}/> )
+      content = this.props.films.map( (film, idx) => <FilmThumb selectFilmHandler={this.props.selectFilm} key={idx} film={film}/> )
     }
     return (
       <div style={styles.filmListContainer}>

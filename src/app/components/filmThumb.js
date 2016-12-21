@@ -1,10 +1,12 @@
 import React from 'react'
 
+const height = 90
+const width = 150
+
 const styles = {
   thumbStyles: {
-    backgroundSize: 'cover',
-    width: "90px",
-    height: "60px"
+    width: `${width}px`,
+    height: `${height}px`,
   }
 }
 
@@ -14,10 +16,18 @@ export default class FilmThumb extends React.Component {
     this.props = props
   }
   render(){
-    let { images } = this.props.film
-    let background = images[0]
+    let { film, selectFilmHandler } = this.props
+    let { images, title } = film
+    let { url } = images[0]
+    
+    let background = `${url}?width=${width}&height=${height}`
     return (
-      <div style={Object.assign({}, styles.thumbStyles, {backgroundImage: ""})}></div>
+      <div className="film-thumb" onClick={()=>selectFilmHandler(film)} style={Object.assign({},  ...styles.thumbStyles, {backgroundImage: `url(${background})`})}>
+        <div className="film-thumb-mask"></div>
+        <div className="film-thumb-content">
+          <p>{ title }</p>
+        </div>
+      </div>
     )
   }
 }

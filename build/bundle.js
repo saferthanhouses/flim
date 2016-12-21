@@ -20621,11 +20621,13 @@ var LoadingBar = (function (superclass) {
   return LoadingBar;
 }(react.Component));
 
+var height = 90;
+var width = 150;
+
 var styles$2 = {
   thumbStyles: {
-    backgroundSize: 'cover',
-    width: "90px",
-    height: "60px"
+    width: (width + "px"),
+    height: (height + "px"),
   }
 };
 
@@ -20639,11 +20641,22 @@ var FilmThumb = (function (superclass) {
   FilmThumb.prototype = Object.create( superclass && superclass.prototype );
   FilmThumb.prototype.constructor = FilmThumb;
   FilmThumb.prototype.render = function render (){
-    var ref = this.props.film;
-    var images = ref.images;
-    var background = images[0];
+    var ref = this.props;
+    var film = ref.film;
+    var selectFilmHandler = ref.selectFilmHandler;
+    var images = film.images;
+    var title = film.title;
+    var ref$1 = images[0];
+    var url = ref$1.url;
+    
+    var background = url + "?width=" + width + "&height=" + height;
     return (
-      react.createElement( 'div', { style: Object.assign({}, styles$2.thumbStyles, {backgroundImage: ""}) })
+      react.createElement( 'div', { className: "film-thumb", onClick: function (){ return selectFilmHandler(film); }, style: Object.assign.apply(Object, [ {} ].concat( styles$2.thumbStyles, [{backgroundImage: ("url(" + background + ")")}] )) },
+        react.createElement( 'div', { className: "film-thumb-mask" }),
+        react.createElement( 'div', { className: "film-thumb-content" },
+          react.createElement( 'p', null, title )
+        )
+      )
     )
   };
 
@@ -20671,12 +20684,14 @@ var FilmList = (function (superclass) {
   FilmList.prototype = Object.create( superclass && superclass.prototype );
   FilmList.prototype.constructor = FilmList;
   FilmList.prototype.render = function render (){
+    var this$1 = this;
+
     console.log("render", this.props);
     var content;
     if (!this.props.filmsLoaded) {
       content = react.createElement( LoadingBar, null );
     } else {
-      content = this.props.films.map( function (film, idx) { return react.createElement( FilmThumb, { key: idx, film: film }); } );
+      content = this.props.films.map( function (film, idx) { return react.createElement( FilmThumb, { selectFilmHandler: this$1.props.selectFilm, key: idx, film: film }); } );
     }
     return (
       react.createElement( 'div', { style: styles$1.filmListContainer },
@@ -20704,18 +20719,23 @@ var App = (function (superclass) {
     superclass.call(this);
     this.state = {
       filmsLoaded: false,
-      films: []
+      films: [],
+      selectedFilm: null
     };
+    this.selectFilm = this.selectFilm.bind(this);
   }
 
   if ( superclass ) App.__proto__ = superclass;
   App.prototype = Object.create( superclass && superclass.prototype );
   App.prototype.constructor = App;
+  App.prototype.selectFilm = function selectFilm (film){
+    this.setState({selectedFilm: film});
+  };
   App.prototype.componentDidMount = function componentDidMount (){
     var this$1 = this;
 
     // do request to server here
-    fetch('http://localhost:9000/films')
+    fetch('http://localhost:9000/films/annotated')
       .then( function (response) {
         return response.json()
         // console.log("response", response.json());
@@ -20737,7 +20757,7 @@ var App = (function (superclass) {
           react.createElement( 'div', { style: styles.searchBarContainer },
             react.createElement( SearchBar, { filmsLoaded: this.state.filmsLoaded })
           ),
-          react.createElement( FilmList, { style: styles.filmListContainer, films: this.state.films, filmsLoaded: this.state.filmsLoaded })
+          react.createElement( FilmList, { style: styles.filmListContainer, selectFilm: this.selectFilm, films: this.state.films, filmsLoaded: this.state.filmsLoaded })
         )
       )
     );

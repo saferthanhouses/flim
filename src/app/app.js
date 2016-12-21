@@ -24,12 +24,17 @@ class App extends React.Component {
     super()
     this.state = {
       filmsLoaded: false,
-      films: []
+      films: [],
+      selectedFilm: null
     }
+    this.selectFilm = this.selectFilm.bind(this)
+  }
+  selectFilm(film){
+    this.setState({selectedFilm: film})
   }
   componentDidMount(){
     // do request to server here
-    fetch('http://localhost:9000/films')
+    fetch('http://localhost:9000/films/annotated')
       .then( response => {
         return response.json()
         // console.log("response", response.json());
@@ -51,7 +56,7 @@ class App extends React.Component {
           <div style={styles.searchBarContainer}>
             <SearchBar filmsLoaded={this.state.filmsLoaded}/>
           </div>
-          <FilmList style={styles.filmListContainer} films={this.state.films} filmsLoaded={this.state.filmsLoaded}  />
+          <FilmList style={styles.filmListContainer} selectFilm={this.selectFilm} films={this.state.films} filmsLoaded={this.state.filmsLoaded}  />
         </Container>
       </div>
     );

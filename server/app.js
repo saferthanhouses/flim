@@ -10,6 +10,8 @@ const app = express()
 
 app.use(morgan('dev'))
 
+app.get('/films/annotated', getAnnotatedFilms)
+
 app.get('/films', getFilms)
 app.get('/films/:id', getFilm)
 
@@ -23,7 +25,7 @@ app.get('*', function(req,res, next){
 app.use(handleError)
 
 function getFilms(req, res, next){
-  Films.find({})
+  Films.find({}).limit(50)
     .then( films => {
       res.status(200).json(films)
     })
@@ -35,6 +37,14 @@ function getFilm(req, res, next){
   Films.findById(req.params.id)
     .then( film => {
       res.status(200).json(film)      
+    })
+    .catch( next )
+}
+
+function getAnnotatedFilms(req,res,next){
+  Films.find({annotated: true})
+    .then( films => {
+      res.status(200).json(films)
     })
     .catch( next )
 }

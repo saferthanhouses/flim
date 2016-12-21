@@ -4,7 +4,8 @@ const promisifyAll = require('bluebird').promisifyAll
 const mongoose = promisifyAll(require('mongoose'));
 const labelImage = require('./labelImages').labelImage
 // const testTypes = require('./labelImages').testTypes
-const FilmModel = require('./models').FilmModel
+const FilmModel = require('../models').FilmModel
+Promise = require('bluebird')
 
 let goal = 300
 
@@ -98,11 +99,11 @@ function reseedMovies(){
 
 /* End scrape movies */
 
-function annotateMovies(n){
-  return FilmModel.find({}).limit(50)
+function annotateMovies(){
+  return FilmModel.find({annotated: {$exists: false}}).limit(2)
     .then( movies => {
       console.log(`annotating ${movies.length} movies`)
-      return Promise.all(movies.map(getLabelsAndUpdate))
+      return Promise.each(movies, getLabelsAndUpdate)
     })
     .then( _ => {
       console.log("successfully updated movies");
@@ -139,7 +140,7 @@ function getLabelsAndUpdate(movie){
 }
 
 function testMakeLabels(){
-  return FilmModel.findOne({title: "Black Sunday"})
+  return FilmModel.findOne({annotated: {$exists: false}})
   .then( movie => {
     return getLabelsAndUpdate(movie)
   })
@@ -178,7 +179,7 @@ function cumulativeLabelsForFilm(movie){
 //   })
 /* End label movies images */
 
-testMakeLabels()
+annotateMovies()
   .then( () => {
     process.exit(0)
   })
