@@ -29,18 +29,27 @@ function bundleJS() {
     plugins: [
       buble(),
       cjs({
-        exclude: [
-        'node_modules/process-es6/**',
-        ],
-        include: [
-          'node_modules/react/**',
-          'node_modules/react-dom/**',
-          'node_modules/fbjs/**',
-          'node_modules/muicss/**',
-          'node_modules/object-assign/**',
-          'lib/react/**',
-          'lib/react-dom/**'
-        ]
+        // exclude: [
+        // 'node_modules/process-es6/**',
+        // ],
+        // include: [
+        //   'node_modules/react/**',
+        //   'node_modules/react-dom/**',
+        //   'node_modules/react-router/**',
+        //   'node_modules/fbjs/**',
+        //   'node_modules/muicss/**',
+        //   'node_modules/object-assign/**',
+        //   'lib/react/**',
+        //   'lib/react-dom/**',
+        //   // 'lib/'
+        // ],
+        nameExports: {
+             'node_modules/react/react.js' : ['Component', 'Children', 'createElement', 'PropTypes'],
+             'node_modules/react-dom/index.js' : ['render'],
+             'node_modules/react-router/index.js': ['browserHistory', 'Router', 'Route', 'Link', 'IndexRoute'],
+             'node_modules/d3/index.js': ['select'],
+             'node_modules/react-d3/index.js': ['Treemap']
+        }
       }),
       globals(),
       replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
@@ -55,7 +64,7 @@ function bundleJS() {
     // console.log(bundle);
     // Generate bundle + sourcemap
     return bundle.write({
-      format: 'iife',
+      // format: 'iife',
       dest: './build/bundle.js'
     });
   })

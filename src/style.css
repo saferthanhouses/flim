@@ -1,3 +1,5 @@
+/*@import url('https://fonts.googleapis.com/css?family=Raleway');*/
+
 html, body { 
   height: 100%; 
 }
@@ -44,4 +46,117 @@ body {
   font-weight: 800;
   z-index:25;
   color:white;
+}
+
+#intro {
+  height:100vh;
+  transition: 0.5s width;
+}
+
+.intro-open {
+  width: 450px;
+}
+
+.intro-closed {
+  width: 50px;
+}
+
+@media (min-width: 600px){
+  #intro-container {
+    border: none;
+    height: 300px;
+  }
+}
+
+@media (max-width: 450px){
+  #app-container {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 450px){
+  #app-container {
+    flex-direction: row;
+  }
+}
+
+#app-container {
+  display: flex;
+}
+
+
+#intro-container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  /*background-color: rgba(105, 240, 174, 0.81);*/
+  background-color: rgba(0,0,0,0.95);
+  border-top: 1px solid grey;
+  padding: 10px 15px;
+  max-width: 600px;
+}
+
+#intro-container h3 {
+  /*font-size: 50px;
+  line-height: initial;
+  font-family: 'Raleway', sans-serif;
+  text-decoration: underline;
+  padding-left: 11px;
+  border-left: 2px solid grey;
+  margin-bottom: 25px;
+  color: #2b2a2a;*/
+  font-size: 50px;
+  color: white;
+  line-height: initial;
+  font-family: monospace;
+  /* text-decoration: underline; */
+  padding-left: 11px;
+  border-left: 2px solid grey;
+  margin-bottom: 25px;
+}
+
+#intro-container p {
+  color: #2b2a2a;
+  margin: 0;
+  font-size: 25px;
+  line-height: 40px;
+  font-family: 'Raleway', sans-serif;
+}
+
+#intro-container p:nth-child(2) {
+  color: #8844cb;
+  font-weight: 800;
+  font-style: italic;
+  margin-bottom: 15px;
+}
+
+#app-image {
+  margin-left: 10px;
+  margin-top: 7px;
+  display: inline-block;
+  transition: transform 0.5s;
+  transform: rotate(-90deg);
+}
+
+#app-image:hover {
+  transform: rotate(0deg);
+}
+
+#film-list {
+  height: 100vh; 
+  position: relative;
+  background-color: #342346;
+  padding-top: 15px;
+  flex-grow: 2;
+}
+
+@media (min-width:450px){
+  #film-list {
+    overflow-y: scroll;
+  }
+}
+@media (max-width: 450px){
+  #film-list {
+    overflow-y: auto;
+  }
 }

@@ -10,10 +10,11 @@ const app = express()
 
 app.use(morgan('dev'))
 
-app.get('/films/annotated', getAnnotatedFilms)
+app.get('/api/films/annotated', getAnnotatedFilms)
 
-app.get('/films', getFilms)
-app.get('/films/:id', getFilm)
+app.get('/api/films', getFilms)
+app.get('/api/films/:id/labels', getFilmLabels)
+app.get('/api/films/:id', getFilm)
 
 app.use('/lib', express.static('lib'))
 app.use(express.static('build'))
@@ -33,7 +34,18 @@ function getFilms(req, res, next){
 }
 
 function getFilm(req, res, next){
-  console.log("req.params.id", req.params.id);
+  Films.findById(req.params.id)
+    .then( film => {
+      let allLabels = cumulativeLabelsForFilm(film)
+      console.log("allLabels", allLabels);
+      film.allLabels = allLabels
+      // console.log("film", film);
+      res.status(200).json({film, labels: allLabels})      
+    })
+    .catch( next )
+}
+
+function getFilmLabels(req, res, next){
   Films.findById(req.params.id)
     .then( film => {
       res.status(200).json(film)      
@@ -53,5 +65,28 @@ function handleError(err, req, res, next){
   console.log("error!", err);
   res.status(500).send(err.message)
 }
+
+/* Utils */
+
+function cumulativeLabelsForFilm(movie){
+  let movieLabels = {}
+  movie.images.forEach( image => {
+    console.log(image);
+    movieLabels = image.labels.reduce( (labelsColl, next) => {
+      console.log("next", next);
+      if (!next){
+        return labelsColl
+      }
+      if (labelsColl[next.description]){
+        labelsColl[next.description].push(next)
+      } else {
+        labelsColl[next.description] = [next]
+      }
+      return labelsColl
+    }, movieLabels)
+  })
+  return movieLabels
+}
+
 
 module.exports = app;

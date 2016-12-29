@@ -5,19 +5,10 @@ import Button from 'muicss/lib/react/button';
 import Container from 'muicss/lib/react/container';
 import Input from 'muicss/lib/react/input';
 
-import SearchBar from './components/searchBar'
-import FilmList from './components/filmList'
-
-const styles = {
-  searchBarContainer: {
-    position: "absolute",
-    left: "-15px",
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center"
-  },
-}
+import Intro from './components/intro.js'
+import FilmsView from './components/filmsView'
+import FilmDetailView from './components/filmDetailView'
+import { browserHistory, Router, Route, IndexRoute } from 'react-router'
 
 class App extends React.Component {
   constructor(){
@@ -27,18 +18,11 @@ class App extends React.Component {
       films: [],
       selectedFilm: null
     }
-    this.selectFilm = this.selectFilm.bind(this)
-  }
-  selectFilm(film){
-    this.setState({selectedFilm: film})
   }
   componentDidMount(){
     // do request to server here
-    fetch('http://localhost:9000/films/annotated')
-      .then( response => {
-        return response.json()
-        // console.log("response", response.json());
-      })
+    fetch('http://localhost:9000/api/films/annotated')
+      .then( response => response.json())
       .then( films => {
         this.setState({ filmsLoaded: true, films })
       })
@@ -47,20 +31,27 @@ class App extends React.Component {
       })
   }
   render() {
-    console.log("render", this.state);
     return (
-      <div>
-        <Appbar>
-        </Appbar>
-        <Container style={{height: "100vh", position: "relative"}}>
-          <div style={styles.searchBarContainer}>
-            <SearchBar filmsLoaded={this.state.filmsLoaded}/>
-          </div>
-          <FilmList style={styles.filmListContainer} selectFilm={this.selectFilm} films={this.state.films} filmsLoaded={this.state.filmsLoaded}  />
-        </Container>
+      <div id="app-container">
+        <Intro open={true}></Intro>
+        <div id="film-list" style={{}}>
+          {this.props.children}
+        </div>
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('container'));
+
+
+
+ReactDOM.render((
+  <Router history={browserHistory}>
+    <Route path="/" component={App} redirectTo="films">
+      <IndexRoute component={FilmsView}/>
+      <Route path="films/:filmId" component={FilmDetailView}/>
+      <Route path="films" component={FilmsView}/>
+      <Route path="*" component={FilmsView}/>
+    </Route>
+  </Router>
+), document.getElementById('container'));
